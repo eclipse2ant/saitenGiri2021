@@ -1,9 +1,13 @@
-from asyncio.windows_events import NULL
 from tkinter import *
 from tkinter import messagebox
 
 import os
 import sys
+import shutil
+import pathlib
+import imghdr
+import openpyxl
+
 from PIL import Image, ImageTk, ImageDraw, ImageFont  # 外部ライブラリ
 
 class SaitenGirl:
@@ -21,7 +25,8 @@ class SaitenGirl:
 		self.fig_frame = Frame(self.top_frame, width=self.fifwid, height=self.fifhet)
 		self.fig_frame.grid(column=0, row=0)
 		self.f_data_list = [{'name': "nfo" , 'command': self.info, 'text': "はじめに",},
-			{'name': "setting_ok", 'command': self.setting_ck, 'text': "初期設定をする"}
+			{'name': "setting_ok", 'command': self.setting_ck, 'text': "初期設定をする"},
+			{'name': "input_ok", 'command': self.input_ok, }
     ]
 		
 
@@ -49,12 +54,16 @@ class SaitenGirl:
 		exBool = True
 		botWid = 20
 
-		
-		infoB = Button(
-			button_frame, text="はじめに", command=self.info, width=botWid, height=2, highlightthickness=0).pack(expand=exBool)
+		for f_data in self.f_data_list:
+			Button(
+			button_frame, text=f_data["text"], command=f_data["command"], width=botWid, height=2, highlightthickness=0).pack(expand=exBool)
 			
-		initB = Button(
-			button_frame, text="初期設定をする", command=self.setting_ck, width=botWid, height=2, highlightthickness=0).pack(expand=exBool)
+		
+		#infoB = Button(
+		#	button_frame, text="はじめに", command=self.info, width=botWid, height=2, highlightthickness=0).pack(expand=exBool)
+			
+		#initB = Button(
+		#	button_frame, text="初期設定をする", command=self.setting_ck, width=botWid, height=2, highlightthickness=0).pack(expand=exBool)
 		
 	#	self.root.mainloop()
 			
@@ -79,7 +88,25 @@ class SaitenGirl:
 		else:
 			messagebox.showinfo(
 				'確認', '初期設定は完了しています。解答用紙を、setting/inputに入れてから、解答用紙分割をしてください。')
+   
+   
+	def input_ck(self):
+    # 表示する画像の取得
+    	files = get_sorted_files(os.getcwd() + "/setting/input/*")
+    	if not files:
+    # メッセージボックス（警告）
+       		 messagebox.showerror(
+            "エラー", "setting/inputの中に、解答用紙のデータが存在しません。画像を入れてから、また開いてね。")
+    	else:
+        	GiriActivate()
 
+	def initDir(self):
+        os.makedirs("./setting/input", exist_ok=True)
+    	os.makedirs("./setting/output", exist_ok=True)
+    	f = open('setting/ini.csv', 'w')  # 既存でないファイル名を作成してください
+    	writer = csv.writer(f, lineterminator='\n')  # 行末は改行
+    	writer.writerow(["tag", "start_x", "start_y", "end_x", "end_y"])
+    	f.close()
 
 
 # 画像パスの取得
