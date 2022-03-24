@@ -7,8 +7,12 @@ import shutil
 import pathlib
 import imghdr
 import openpyxl
+import glob
+import csv
 
-from PIL import Image, ImageTk, ImageDraw, ImageFont  # 外部ライブラリ
+from PIL import Image, ImageTk, ImageDraw, ImageFont
+
+from saitenGiri2021 import initDir
 
 class SaitenGirl:
 	def __init__(self):
@@ -26,8 +30,8 @@ class SaitenGirl:
 		self.fig_frame.grid(column=0, row=0)
 		self.f_data_list = [{'name': "nfo" , 'command': self.info, 'text': "はじめに",},
 			{'name': "setting_ok", 'command': self.setting_ck, 'text': "初期設定をする"},
-			{'name': "input_ok", 'command': self.input_ok, }
-    ]
+			{'name': "input_ok", 'command': self.input_ck, 'text': "どこを斬るか決める"}
+    	]
 		
 
 	def do(self):
@@ -58,18 +62,7 @@ class SaitenGirl:
 			Button(
 			button_frame, text=f_data["text"], command=f_data["command"], width=botWid, height=2, highlightthickness=0).pack(expand=exBool)
 			
-		
-		#infoB = Button(
-		#	button_frame, text="はじめに", command=self.info, width=botWid, height=2, highlightthickness=0).pack(expand=exBool)
-			
-		#initB = Button(
-		#	button_frame, text="初期設定をする", command=self.setting_ck, width=botWid, height=2, highlightthickness=0).pack(expand=exBool)
-		
-	#	self.root.mainloop()
-			
-		
-
-
+	
 	def info(self):
 		messagebox.showinfo(
 			"はじめに", "オンラインヘルプをご覧ください。\n https://phys-ken.github.io/saitenGiri2021/")
@@ -77,40 +70,39 @@ class SaitenGirl:
 	def setting_ck(self):
 		if not os.path.exists("./setting/"):
 			ret = messagebox.askyesno(
-				'初回起動です', '採点のために、いくつかのフォルダーをこのファイルと同じ場所に作成します。\nよろしいですか？')
+       			'初回起動です', '採点のために、いくつかのフォルダーをこのファイルと同じ場所に作成します。\nよろしいですか？')
 			if ret == True:
-				initDir()
+				initDir(self)
 				messagebox.showinfo(
-		 			'準備ができました。', '解答用紙を、setting/input の中に保存してください。jpeg または png に対応しています。')
+        			'準備ができました。', '解答用紙を、setting/input の中に保存してください。jpeg または png に対応しています。')
 			else:
 				# メッセージボックス（情報）
 				messagebox.showinfo('終了', 'フォルダは作成しません。')
 		else:
 			messagebox.showinfo(
-				'確認', '初期設定は完了しています。解答用紙を、setting/inputに入れてから、解答用紙分割をしてください。')
-   
-   
-	def input_ck(self):
-    # 表示する画像の取得
-    	files = get_sorted_files(os.getcwd() + "/setting/input/*")
-    	if not files:
-    # メッセージボックス（警告）
-       		 messagebox.showerror(
-            "エラー", "setting/inputの中に、解答用紙のデータが存在しません。画像を入れてから、また開いてね。")
-    	else:
-        	GiriActivate()
+       			'確認', '初期設定は完了しています。解答用紙を、setting/inputに入れてから、解答用紙分割をしてください。')
 
-	def initDir(self):
-        os.makedirs("./setting/input", exist_ok=True)
-    	os.makedirs("./setting/output", exist_ok=True)
-    	f = open('setting/ini.csv', 'w')  # 既存でないファイル名を作成してください
-    	writer = csv.writer(f, lineterminator='\n')  # 行末は改行
-    	writer.writerow(["tag", "start_x", "start_y", "end_x", "end_y"])
-    	f.close()
+	def input_ck(self): 
+		# 表示する画像の取得
+		files = self.get_sorted_files(os.getcwd() + "/setting/input/*")
+
+	def get_sorted_files(self,dir_path):
+		all_sorted = sorted(glob.glob(dir_path))
+		fig_sorted = [s for s in all_sorted if s.endswith(
+        ('jpg', "jpeg", "png", "PNG", "JPEG", "JPG", "gif"))]
+		return fig_sorted
+
+	def initDir():
+		os.makedirs("./setting/input", exist_ok=True)
+		os.makedirs("./setting/output", exist_ok=True)
+		f = open('setting/ini.csv', 'w')  # 既存でないファイル名を作成してください
+		writer = csv.writer(f, lineterminator='\n')  # 行末は改行
+		writer.writerow(["tag", "start_x", "start_y", "end_x", "end_y"])
+		f.close()
 
 
-# 画像パスの取得
-# https://msteacher.hatenablog.jp/entry/2020/06/27/170529
+	# 画像パスの取得
+	# https://msteacher.hatenablog.jp/entry/2020/06/27/170529
 	def resource_path(self, relative_path):
 		if hasattr(sys, '_MEIPASS'):
 			return os.path.join(sys._MEIPASS, relative_path)
