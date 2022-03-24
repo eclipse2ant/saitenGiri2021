@@ -12,7 +12,7 @@ import csv
 
 from PIL import Image, ImageTk, ImageDraw, ImageFont
 
-from saitenGiri2021 import GiriActivate, initDir
+from saitenGiri2021 import GiriActivate, get_sorted_files, initDir
 
 class SaitenGirl:
 	def __init__(self):
@@ -72,7 +72,7 @@ class SaitenGirl:
 			ret = messagebox.askyesno(
        			'初回起動です', '採点のために、いくつかのフォルダーをこのファイルと同じ場所に作成します。\nよろしいですか？')
 			if ret == True:
-				initDir(self)
+				self.initDir()
 				messagebox.showinfo(
         			'準備ができました。', '解答用紙を、setting/input の中に保存してください。jpeg または png に対応しています。')
 			else:
@@ -90,8 +90,7 @@ class SaitenGirl:
 			messagebox.showerror(
             "エラー", "setting/inputの中に、解答用紙のデータが存在しません。画像を入れてから、また開いてね。")
 		else:
-			GiriActivate()
-			
+			self.GirActivate()
 
 	def get_sorted_files(self,dir_path):
 		all_sorted = sorted(glob.glob(dir_path))
@@ -99,7 +98,7 @@ class SaitenGirl:
         ('jpg', "jpeg", "png", "PNG", "JPEG", "JPG", "gif"))]
 		return fig_sorted
 
-	def initDir():
+	def initDir(self):
 		os.makedirs("./setting/input", exist_ok=True)
 		os.makedirs("./setting/output", exist_ok=True)
 		f = open('setting/ini.csv', 'w')  # 既存でないファイル名を作成してください
@@ -108,8 +107,28 @@ class SaitenGirl:
 		f.close()
 
 	def GirActivate(self):
-		return 
+		global RESIZE_RETIO
+		global img_resized
+		global canvas1
+		global img_tk
+		global Giri_cutter
+		global qCnt
 
+		def toTop():
+			global qCnt
+			ret = messagebox.askyesno(
+            '保存しません', '作業中のデータは保存されません。\n画面を移動しますか？')
+			if ret == True:
+				qCnt = 0
+				Giri_cutter.destroy()
+			else:
+				pass
+			
+		# 表示する画像の取得
+		files = self.get_sorted_files(os.getcwd() + "/setting/input/*")
+		print(files)
+
+		return
 	# 画像パスの取得
 	# https://msteacher.hatenablog.jp/entry/2020/06/27/170529
 	def resource_path(self, relative_path):
