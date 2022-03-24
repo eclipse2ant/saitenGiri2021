@@ -12,7 +12,7 @@ import csv
 
 from PIL import Image, ImageTk, ImageDraw, ImageFont
 
-from saitenGiri2021 import initDir
+from saitenGiri2021 import GiriActivate, initDir
 
 class SaitenGirl:
 	def __init__(self):
@@ -85,6 +85,13 @@ class SaitenGirl:
 	def input_ck(self): 
 		# 表示する画像の取得
 		files = self.get_sorted_files(os.getcwd() + "/setting/input/*")
+		if not files:
+    	# メッセージボックス（警告）
+			messagebox.showerror(
+            "エラー", "setting/inputの中に、解答用紙のデータが存在しません。画像を入れてから、また開いてね。")
+		else:
+			GiriActivate()
+			
 
 	def get_sorted_files(self,dir_path):
 		all_sorted = sorted(glob.glob(dir_path))
@@ -100,6 +107,8 @@ class SaitenGirl:
 		writer.writerow(["tag", "start_x", "start_y", "end_x", "end_y"])
 		f.close()
 
+	def GirActivate(self):
+		return 
 
 	# 画像パスの取得
 	# https://msteacher.hatenablog.jp/entry/2020/06/27/170529
