@@ -4,11 +4,14 @@ from PIL import Image, ImageTk, ImageDraw, ImageFont  # 外部ライブラリ
 
 import os
 import csv
+import shutil
 import MyFileUtil as fu
 
 window_h = 700
 window_w = int(window_h * 1.7)
 fig_area_w = int(window_h * 1)
+global qCnt
+qCnt = 0
 
 def GirActivate():
 	global RESIZE_RETIO
@@ -87,16 +90,17 @@ def GirActivate():
   # Canvasウィジェットを配置し、各種イベントを設定
 	canvas1.pack()
 
-  # 戻るボタン
-	backB = Button(
-  button_frame, text='一つ前に戻る', command=back_one, width=20, height=4).pack()
+	f_data_list = [{'name': "back_one" , 'command': back_one, 'text': "一つ前に戻る",},
+			{'name': "trim_fin", 'command': trim_fin, 'text': "入力完了\n(保存して戻る)"},
+			{'name': "toTop", 'command': toTop, 'text': "topに戻る\n(保存はされません)"}
+    	]
+	exBool = True
+	botWid = 20
 
-  # 入力完了
-	finB = Button(
-  button_frame, text='入力完了\n(保存して戻る)', command=trim_fin, width=20, height=4).pack()
-	topB = Button(
-        button_frame, text='topに戻る\n(保存はされません)', command=toTop, width=20, height=4).pack()
-
+	for f_data in f_data_list:
+		Button(
+			button_frame, text=f_data["text"], command=f_data["command"], width=botWid, height=2, highlightthickness=0).pack(expand=exBool)
+  
 	canvas1.bind("<ButtonPress-1>", start_point_get)
 	canvas1.bind("<Button1-Motion>", rect_drawing)
 	canvas1.bind("<ButtonRelease-1>", release_action)
@@ -109,23 +113,133 @@ images = []  # to hold the newly created image
 
 
 def back_one():
-    global qCnt
-    if qCnt == 0:
-        return
-    qCnt = qCnt - 1
-    # タグに基づいて画像を削除
-    if qCnt == 0:
-        canvas1.delete("nameBox", "nameText", "rectTmp")
-        images.pop(-1)
-    else:
-        canvas1.delete("qBox" + str(qCnt), "qText" + str(qCnt), "rectTmp")
-        images.pop(-1)
-    # csvの最終行を削除
-    readFile = open("setting/ini.csv")
-    lines = readFile.readlines()
-    readFile.close()
-    w = open("setting/ini.csv", 'w')
-    w.writelines([item for item in lines[:-1]])
-    w.close()
+  global qCnt
+  if qCnt == 0:
+    return
+  qCnt = qCnt - 1
+  # タグに基づいて画像を削除
+  if qCnt == 0:
+    canvas1.delete("nameBox", "nameText", "rectTmp")
+    images.pop(-1)
+  else:
+    canvas1.delete("qBox" + str(qCnt), "qText" + str(qCnt), "rectTmp")
+    images.pop(-1)
+  # csvの最終行を削除
+  readFile = open("setting/ini.csv")
+  lines = readFile.readlines()
+  readFile.close()
+  w = open("setting/ini.csv", 'w')
+  w.writelines([item for item in lines[:-1]])
+  w.close()
 
 
+def trim_fin():
+	global Giri_cutter
+	ret = messagebox.askyesno('終了します', '斬り方を決定し、ホームに戻っても良いですか？')
+	if ret == True:
+		cur = os.getcwd()
+		beforePath = cur + "/setting/ini.csv"
+		afterPath = cur + "/setting/trimData.csv"
+		shutil.move(beforePath, afterPath)
+		Giri_cutter.destroy()
+
+# ドラッグ開始した時のイベント - - - - - - - - - - - - - - - - - - - - - - - - - -
+def start_point_get(event):
+  global start_x, start_y  # グローバル変数に書き込みを行なうため宣言
+
+  canvas1.delete("rectTmp")  # すでに"rectTmp"タグの図形があれば削除
+
+  # canvas1上に四角形を描画（rectangleは矩形の意味）
+  canvas1.create_rectangle(event.x,
+                            event.y,
+                            event.x + 1,
+                            event.y + 1,
+                            outline="red",
+                            tag="rectTmp")
+    # グローバル変数に座標を格納
+  start_x, start_y = event.x, event.y
+
+
+# ドラッグ中のイベント - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+def rect_drawing(event):
+
+  # ドラッグ中のマウスポインタが領域外に出た時の処理
+  if event.x < 0:
+    end_x = 0
+  else:
+    end_x = min(img_resized.width, event.x)
+  if event.y < 0:
+    end_y = 0
+  else:
+    end_y = min(img_resized.height, event.y)
+
+  # "rectTmp"タグの画像を再描画
+  canvas1.coords("rectTmp", start_x, start_y, end_x, end_y)
+
+
+
+def release_action(event):
+	global qCnt
+
+	if qCnt == 0:
+		pos = canvas1.bbox("rectTmp")
+
+  	# canvas1上に四角形を描画（rectangleは矩形の意味）
+		create_rectangle_alpha(pos[0], pos[1], pos[2], pos[3],
+                               fill="green",
+                               alpha=0.3,
+                               tag="nameBox"
+                               )
+
+		canvas1.create_text(
+            (pos[0] + pos[2]) / 2, (pos[1] + pos[3]) / 2,
+            text="name",
+            tag="nameText"
+        )
+
+  	# "rectTmp"タグの画像の座標を元の縮尺に戻して取得
+		start_x, start_y, end_x, end_y = [
+            round(n * RESIZE_RETIO) for n in canvas1.coords("rectTmp")
+    	]
+		with open('setting/ini.csv', 'a') as f:
+			writer = csv.writer(f, lineterminator='\n')  # 行末は改行
+			writer.writerow(["name", start_x, start_y, end_x, end_y])
+
+	else:
+		pos = canvas1.bbox("rectTmp")
+    # canvas1上に四角形を描画（rectangleは矩形の意味）
+		create_rectangle_alpha(pos[0], pos[1], pos[2], pos[3],
+                               fill="red",
+                               alpha=0.3,
+                               tag="qBox" + str(qCnt)
+                               )
+		canvas1.create_text(
+            (pos[0] + pos[2]) / 2, (pos[1] + pos[3]) / 2,
+            text="Q_" + str(qCnt),
+            tag="qText" + str(qCnt)
+        )
+
+    # "rectTmp"タグの画像の座標を元の縮尺に戻して取得
+		start_x, start_y, end_x, end_y = [
+            round(n * RESIZE_RETIO) for n in canvas1.coords("rectTmp")
+        ]
+		with open('setting/ini.csv', 'a') as f:
+			writer = csv.writer(f, lineterminator='\n')  # 行末は改行
+			writer.writerow(["Q_" + str(qCnt).zfill(4),
+                            start_x, start_y, end_x, end_y])
+
+	qCnt = qCnt + 1
+
+
+
+def create_rectangle_alpha(x1, y1, x2, y2, **kwargs):
+  if 'alpha' in kwargs:
+    alpha = int(kwargs.pop('alpha') * 255)
+    fill = kwargs.pop('fill')
+    fill = Giri_cutter.winfo_rgb(fill) + (alpha,)
+    image = Image.new('RGBA', (x2-x1, y2-y1), fill)
+    images.append(ImageTk.PhotoImage(image, master=Giri_cutter))
+    canvas1.create_image(x1, y1, image=images[-1], anchor='nw')
+    canvas1.create_rectangle(x1, y1, x2, y2, **kwargs)
