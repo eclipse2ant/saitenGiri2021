@@ -20,6 +20,10 @@ class SaitenGirl:
 		self.val = 0.4
 		self.fifhet = 400
 		
+		self.window_h = 700
+		self.window_w = int(self.window_h * 1.7)
+		self.fig_area_w = int(self.window_h * 1)
+  
 		self.root = Tk()
 		self.root.title("採点ギリギリ")
 		self.root.geometry("800x400")
@@ -127,8 +131,35 @@ class SaitenGirl:
 		# 表示する画像の取得
 		files = self.get_sorted_files(os.getcwd() + "/setting/input/*")
 		print(files)
+  
+  
+		# ini.csvは、起動のたびに初期化する。
+		f = open('setting/ini.csv', 'w')  # 既存でないファイル名を作成してください
+		writer = csv.writer(f, lineterminator='\n')  # 行末は改行
+		writer.writerow(["tag", "start_x", "start_y", "end_x", "end_y"])
+		f.close()
 
-		return
+		img = Image.open(files[0])
+
+		# 画面サイズに合わせて画像をリサイズする
+		# 画像サイズが縦か横かに合わせて、RESIZE_RETIOを決める。
+		w, h = img.size
+		if w >= h:
+			if w <= self.fig_area_w:
+				RESIZE_RETIO = 1
+			else:
+				RESIZE_RETIO = h / self.window_h
+		else:
+			if h <= self.window_h:
+				RESIZE_RETIO = 1
+			else:
+				RESIZE_RETIO = h / self.window_h
+
+		# 画像リサイズ
+		img_resized = img.resize(size=(int(img.width / RESIZE_RETIO),
+                                 int(img.height / RESIZE_RETIO)),
+                           resample=Image.BILINEAR)
+		
 	# 画像パスの取得
 	# https://msteacher.hatenablog.jp/entry/2020/06/27/170529
 	def resource_path(self, relative_path):
