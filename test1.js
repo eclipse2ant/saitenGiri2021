@@ -1,8 +1,9 @@
 const x=1;
  function f() {
-    x=23;
+    const x=3
+    return x
  }
 
 
-f();
+console.log(f());
 console.log(x);

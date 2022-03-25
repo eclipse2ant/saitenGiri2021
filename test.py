@@ -1,10 +1,11 @@
 from asyncio.windows_events import NULL
 
 
-x =NULL
+#x =NULL
 def f():
-    x=1
+  x=1
+  return x
     
-f()
-print(x)
+print(f())
+#print(x)
  
