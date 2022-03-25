@@ -87,4 +87,45 @@ def GirActivate():
   # Canvasウィジェットを配置し、各種イベントを設定
 	canvas1.pack()
 
+  # 戻るボタン
+	backB = Button(
+  button_frame, text='一つ前に戻る', command=back_one, width=20, height=4).pack()
+
+  # 入力完了
+	finB = Button(
+  button_frame, text='入力完了\n(保存して戻る)', command=trim_fin, width=20, height=4).pack()
+	topB = Button(
+        button_frame, text='topに戻る\n(保存はされません)', command=toTop, width=20, height=4).pack()
+
+	canvas1.bind("<ButtonPress-1>", start_point_get)
+	canvas1.bind("<Button1-Motion>", rect_drawing)
+	canvas1.bind("<ButtonRelease-1>", release_action)
+	Giri_cutter.mainloop()
+
+# 透過画像の作成 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# https://stackoverflow.com/questions/54637795/how-to-make-a-tkinter-canvas-rectangle-transparent/54645103
+# 透過画像を削除するときは、imagesの配列から消す。
+images = []  # to hold the newly created image
+
+
+def back_one():
+    global qCnt
+    if qCnt == 0:
+        return
+    qCnt = qCnt - 1
+    # タグに基づいて画像を削除
+    if qCnt == 0:
+        canvas1.delete("nameBox", "nameText", "rectTmp")
+        images.pop(-1)
+    else:
+        canvas1.delete("qBox" + str(qCnt), "qText" + str(qCnt), "rectTmp")
+        images.pop(-1)
+    # csvの最終行を削除
+    readFile = open("setting/ini.csv")
+    lines = readFile.readlines()
+    readFile.close()
+    w = open("setting/ini.csv", 'w')
+    w.writelines([item for item in lines[:-1]])
+    w.close()
+
 
