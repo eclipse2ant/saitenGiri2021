@@ -10,7 +10,7 @@ import MyFileUtil as fu
 window_h = 700
 window_w = int(window_h * 1.7)
 fig_area_w = int(window_h * 1)
-global qCnt
+#global qCnt
 qCnt = 0
 
 def GirActivate():

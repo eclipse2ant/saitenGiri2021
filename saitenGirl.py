@@ -14,6 +14,7 @@ from PIL import Image, ImageTk, ImageDraw, ImageFont
 
 import MyFileUtil as fu
 import Giri as giri
+import Trim as trim
 
 class SaitenGirl:
 	def __init__(self):
@@ -35,7 +36,8 @@ class SaitenGirl:
 		self.fig_frame.grid(column=0, row=0)
 		self.f_data_list = [{'name': "nfo" , 'command': self.info, 'text': "はじめに",},
 			{'name': "setting_ok", 'command': self.setting_ck, 'text': "初期設定をする"},
-			{'name': "input_ok", 'command': self.input_ck, 'text': "どこを斬るか決める"}
+			{'name': "input_ok", 'command': self.input_ck, 'text': "どこを斬るか決める"},
+   		{'name': "trimck", 'command': self.trimck, 'text': "全員の解答用紙を斬る"}
     	]
 		
 
@@ -96,6 +98,95 @@ class SaitenGirl:
             "エラー", "setting/inputの中に、解答用紙のデータが存在しません。画像を入れてから、また開いてね。")
 		else:
 			giri.GirActivate()
+
+
+	def trimck():
+		ret = messagebox.askyesno(
+    'すべての解答用紙を斬っちゃいます。', '全員の解答用紙を、斬ります。\n以下の注意を読んで、よければ始めてください。\n\n ①受験者が100人以上いると、5分ほど時間がかかります。進捗は、一緒に起動したウィンドウに表示されています。\n②inputに保存された画像は、削除されません。\n③現在のoutputは全て消えます。')
+		if ret == True:
+			trim.allTrim()
+		else:
+			pass
+
+
+	def allTrim():
+  	# トリミング前の画像の格納先
+		ORIGINAL_FILE_DIR = "./setting/input"
+    # トリミング後の画像の格納先
+		TRIMMED_FILE_DIR = "./setting/output"
+
+		def readCSV():
+    	# もしcsvが無ければ、全部止める
+			if os.path.isfile("./setting/trimData.csv") == False:
+				return 0
+			else:
+				with open('./setting/trimData.csv') as f:
+					reader = csv.reader(f)
+					data = [row for row in reader]
+					data.pop(0)
+					return data
+
+		data = readCSV()
+
+		try:
+			shutil.rmtree("./setting/output")
+		except OSError as err:
+			pass
+
+		if data == 0:
+			messagebox.showinfo('終了', 'どうやって斬ればいいかわかりません。\nまずはどこを斬るかを決めてください。')
+			return 0
+
+    # 画像ファイル名を取得
+		files = os.listdir(ORIGINAL_FILE_DIR)
+    # 特定の拡張子のファイルだけを採用。実際に加工するファイルの拡張子に合わせる
+		files = [name for name in files if name.split(
+    	".")[-1] in ['jpg', "jpeg", "png", "PNG", "JPEG", "JPG", "gif"]]
+
+		try:
+			for val in files:
+      	# オリジナル画像へのパス
+				path = ORIGINAL_FILE_DIR + "/" + val
+				# トリミングされたimageオブジェクトを取得
+				im = Image.open(path)
+				print(val + "を斬ります" )
+				for pos in data:
+      		# 出力フォルダのパス
+					title , left , top , right , bottom = pos
+					outputDir = TRIMMED_FILE_DIR + "/" + title
+          # もしトリミング後の画像の格納先が存在しなければ作る
+					if os.path.isdir(outputDir) == False:
+						os.makedirs(outputDir)
+						im_trimmed = im.crop((int(left), int(top), int(right), int(bottom)))
+            # qualityは95より大きい値は推奨されていないらしい
+						im_trimmed.save(outputDir + "/" + val, quality=95)
+						print("___"+ title + "を斬り取りました。" )
+						print("********************************")
+		except:
+			messagebox.showinfo(
+        'エラー', 'エラーが検出されました。中断します。\n\n' + str(sys.stderr))
+			try:
+				shutil.rmtree("./setting/output")
+			except OSError as err:
+				pass
+			return 0
+
+    # nameフォルダの中身をリサイズ
+    # maxheight以上のときは、小さくする。
+		maxheight = 50
+		files = glob.glob("./setting/output/name/*")
+		img = Image.open(files[0])
+		namew, nameh = img.size
+		if nameh > maxheight:
+			rr = nameh / maxheight
+			for f in files:
+				img = Image.open(f)
+				img = img.resize((int(namew / rr), int(nameh/rr)))
+				img.save(f)
+
+		output_name_sh()
+		messagebox.showinfo('斬りました', '全員分の解答用紙を斬りました。')
+
 
   
 	# 画像パスの取得
