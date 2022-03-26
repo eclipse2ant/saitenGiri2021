@@ -30,3 +30,7 @@ def readCSV(datafile):
   
 def exxt_filter(files, extlist):
   return ([name for name in files if name.split(".")[-1] in extlist])
+
+def addpath(path, file):
+	return (path + "/" + file)
+

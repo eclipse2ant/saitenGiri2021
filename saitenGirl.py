@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from tkinter import *
 from tkinter import messagebox
 
@@ -79,7 +80,7 @@ class SaitenGirl:
 			ret = messagebox.askyesno(
        			'初回起動です', '採点のために、いくつかのフォルダーをこのファイルと同じ場所に作成します。\nよろしいですか？')
 			if ret == True:
-				self.initDir()
+				fu.initDir()
 				messagebox.showinfo(
         			'準備ができました。', '解答用紙を、setting/input の中に保存してください。jpeg または png に対応しています。')
 			else:
@@ -100,13 +101,16 @@ class SaitenGirl:
 			giri.GirActivate()
 
 
-	def trimck():
+	def trimck(self):
 		ret = messagebox.askyesno(
     'すべての解答用紙を斬っちゃいます。', '全員の解答用紙を、斬ります。\n以下の注意を読んで、よければ始めてください。\n\n ①受験者が100人以上いると、5分ほど時間がかかります。進捗は、一緒に起動したウィンドウに表示されています。\n②inputに保存された画像は、削除されません。\n③現在のoutputは全て消えます。')
 		if ret == True:
 			trim.allTrim()
 		else:
 			pass
+
+	def addingpath(path, file):
+		return (path + "/" + file)
 
 
 	def allTrim():
@@ -146,7 +150,7 @@ class SaitenGirl:
 		try:
 			for val in files:
       	# オリジナル画像へのパス
-				path = ORIGINAL_FILE_DIR + "/" + val
+				path = NULL
 				# トリミングされたimageオブジェクトを取得
 				im = Image.open(path)
 				print(val + "を斬ります" )
@@ -184,7 +188,7 @@ class SaitenGirl:
 				img = img.resize((int(namew / rr), int(nameh/rr)))
 				img.save(f)
 
-		output_name_sh()
+		#output_name_sh()
 		messagebox.showinfo('斬りました', '全員分の解答用紙を斬りました。')
 
 
