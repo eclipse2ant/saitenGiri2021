@@ -14,97 +14,97 @@ fig_area_w = int(window_h * 1)
 qCnt = 0
 
 def GirActivate():
-	global RESIZE_RETIO
-	global img_resized
-	global canvas1
-	global img_tk
-	global Giri_cutter
-	global qCnt
+    global RESIZE_RETIO
+    global img_resized
+    global canvas1
+    global img_tk
+    global Giri_cutter
+    global qCnt
  
-	
-	def toTop():
-		global qCnt
-		ret = messagebox.askyesno(
+    
+    def toTop():
+        global qCnt
+        ret = messagebox.askyesno(
     '保存しません', '作業中のデータは保存されません。\n画面を移動しますか？')
-		if ret == True:
-			qCnt = 0
-			Giri_cutter.destroy()
-		else:
-			pass
+        if ret == True:
+            qCnt = 0
+            Giri_cutter.destroy()
+        else:
+            pass
 
-	# 表示する画像の取得
-	files = fu.get_sorted_files(os.getcwd() + "/setting/input/*")
-	print(files)
+    # 表示する画像の取得
+    files = fu.get_sorted_files(os.getcwd() + "/setting/input/*")
+    print(files)
   
   
-	# ini.csvは、起動のたびに初期化する。
-	f = open('setting/ini.csv', 'w')  # 既存でないファイル名を作成してください
-	writer = csv.writer(f, lineterminator='\n')  # 行末は改行
-	writer.writerow(["tag", "start_x", "start_y", "end_x", "end_y"])
-	f.close()
+    # ini.csvは、起動のたびに初期化する。
+    f = open('setting/ini.csv', 'w')  # 既存でないファイル名を作成してください
+    writer = csv.writer(f, lineterminator='\n')  # 行末は改行
+    writer.writerow(["tag", "start_x", "start_y", "end_x", "end_y"])
+    f.close()
 
-	img = Image.open(files[0])
+    img = Image.open(files[0])
 
-	# 画面サイズに合わせて画像をリサイズする
-	# 画像サイズが縦か横かに合わせて、RESIZE_RETIOを決める。
-	w, h = img.size
-	if w >= h:
-		if w <= fig_area_w:
-			RESIZE_RETIO = 1
-		else:
-			RESIZE_RETIO = h / window_h
-	else:
-		if h <= window_h:
-			RESIZE_RETIO = 1
-		else:
-			RESIZE_RETIO = h / window_h
+    # 画面サイズに合わせて画像をリサイズする
+    # 画像サイズが縦か横かに合わせて、RESIZE_RETIOを決める。
+    w, h = img.size
+    if w >= h:
+        if w <= fig_area_w:
+            RESIZE_RETIO = 1
+        else:
+            RESIZE_RETIO = h / window_h
+    else:
+        if h <= window_h:
+            RESIZE_RETIO = 1
+        else:
+            RESIZE_RETIO = h / window_h
 
-	# 画像リサイズ
-	img_resized = img.resize(size=(int(img.width / RESIZE_RETIO),
+    # 画像リサイズ
+    img_resized = img.resize(size=(int(img.width / RESIZE_RETIO),
                                 int(img.height / RESIZE_RETIO)),
                           resample=Image.BILINEAR)
 
-	Giri_cutter = Tk()
-	Giri_cutter.geometry(str(window_w) + "x" + str(window_h))
-	Giri_cutter.title("解答用紙を斬る")
+    Giri_cutter = Tk()
+    Giri_cutter.geometry(str(window_w) + "x" + str(window_h))
+    Giri_cutter.title("解答用紙を斬る")
 
-	cutting_frame = Frame(Giri_cutter)
-	cutting_frame.pack()
-	canvas_frame = Frame(cutting_frame)
-	canvas_frame.grid(column=0, row=0)
-	button_frame = Frame(cutting_frame)
-	button_frame.grid(column=1, row=0)
+    cutting_frame = Frame(Giri_cutter)
+    cutting_frame.pack()
+    canvas_frame = Frame(cutting_frame)
+    canvas_frame.grid(column=0, row=0)
+    button_frame = Frame(cutting_frame)
+    button_frame.grid(column=1, row=0)
  
   # tkinterで表示できるように画像変換
-	img_tk = ImageTk.PhotoImage(img_resized, master=Giri_cutter)
+    img_tk = ImageTk.PhotoImage(img_resized, master=Giri_cutter)
 
   # Canvasウィジェットの描画
-	canvas1 = Canvas(canvas_frame,
+    canvas1 = Canvas(canvas_frame,
                              bg="black",
                              width=img_resized.width,
                              height=img_resized.height,
                              highlightthickness=0)
   # Canvasウィジェットに取得した画像を描画
-	canvas1.create_image(0, 0, image=img_tk, anchor=NW)
+    canvas1.create_image(0, 0, image=img_tk, anchor=NW)
 
   # Canvasウィジェットを配置し、各種イベントを設定
-	canvas1.pack()
+    canvas1.pack()
 
-	f_data_list = [{'name': "back_one" , 'command': back_one, 'text': "一つ前に戻る",},
-			{'name': "trim_fin", 'command': trim_fin, 'text': "入力完了\n(保存して戻る)"},
-			{'name': "toTop", 'command': toTop, 'text': "topに戻る\n(保存はされません)"}
-    	]
-	exBool = True
-	botWid = 20
+    f_data_list = [{'name': "back_one" , 'command': back_one, 'text': "一つ前に戻る",},
+            {'name': "trim_fin", 'command': trim_fin, 'text': "入力完了\n(保存して戻る)"},
+            {'name': "toTop", 'command': toTop, 'text': "topに戻る\n(保存はされません)"}
+        ]
+    exBool = True
+    botWid = 20
 
-	for f_data in f_data_list:
-		Button(
-			button_frame, text=f_data["text"], command=f_data["command"], width=botWid, height=2, highlightthickness=0).pack(expand=exBool)
+    for f_data in f_data_list:
+        Button(
+            button_frame, text=f_data["text"], command=f_data["command"], width=botWid, height=2, highlightthickness=0).pack(expand=exBool)
   
-	canvas1.bind("<ButtonPress-1>", start_point_get)
-	canvas1.bind("<Button1-Motion>", rect_drawing)
-	canvas1.bind("<ButtonRelease-1>", release_action)
-	Giri_cutter.mainloop()
+    canvas1.bind("<ButtonPress-1>", start_point_get)
+    canvas1.bind("<Button1-Motion>", rect_drawing)
+    canvas1.bind("<ButtonRelease-1>", release_action)
+    Giri_cutter.mainloop()
 
 # 透過画像の作成 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # https://stackoverflow.com/questions/54637795/how-to-make-a-tkinter-canvas-rectangle-transparent/54645103
@@ -134,14 +134,14 @@ def back_one():
 
 
 def trim_fin():
-	global Giri_cutter
-	ret = messagebox.askyesno('終了します', '斬り方を決定し、ホームに戻っても良いですか？')
-	if ret == True:
-		cur = os.getcwd()
-		beforePath = cur + "/setting/ini.csv"
-		afterPath = cur + "/setting/trimData.csv"
-		shutil.move(beforePath, afterPath)
-		Giri_cutter.destroy()
+    global Giri_cutter
+    ret = messagebox.askyesno('終了します', '斬り方を決定し、ホームに戻っても良いですか？')
+    if ret == True:
+        cur = os.getcwd()
+        beforePath = cur + "/setting/ini.csv"
+        afterPath = cur + "/setting/trimData.csv"
+        shutil.move(beforePath, afterPath)
+        Giri_cutter.destroy()
 
 # ドラッグ開始した時のイベント - - - - - - - - - - - - - - - - - - - - - - - - - -
 def start_point_get(event):
@@ -181,56 +181,56 @@ def rect_drawing(event):
 
 
 def release_action(event):
-	global qCnt
+    global qCnt
 
-	if qCnt == 0:
-		pos = canvas1.bbox("rectTmp")
+    if qCnt == 0:
+        pos = canvas1.bbox("rectTmp")
 
-  	# canvas1上に四角形を描画（rectangleは矩形の意味）
-		create_rectangle_alpha(pos[0], pos[1], pos[2], pos[3],
+      # canvas1上に四角形を描画（rectangleは矩形の意味）
+        create_rectangle_alpha(pos[0], pos[1], pos[2], pos[3],
                                fill="green",
                                alpha=0.3,
                                tag="nameBox"
                                )
 
-		canvas1.create_text(
+        canvas1.create_text(
             (pos[0] + pos[2]) / 2, (pos[1] + pos[3]) / 2,
             text="name",
             tag="nameText"
         )
 
-  	# "rectTmp"タグの画像の座標を元の縮尺に戻して取得
-		start_x, start_y, end_x, end_y = [
+      # "rectTmp"タグの画像の座標を元の縮尺に戻して取得
+        start_x, start_y, end_x, end_y = [
             round(n * RESIZE_RETIO) for n in canvas1.coords("rectTmp")
-    	]
-		with open('setting/ini.csv', 'a') as f:
-			writer = csv.writer(f, lineterminator='\n')  # 行末は改行
-			writer.writerow(["name", start_x, start_y, end_x, end_y])
+        ]
+        with open('setting/ini.csv', 'a') as f:
+            writer = csv.writer(f, lineterminator='\n')  # 行末は改行
+            writer.writerow(["name", start_x, start_y, end_x, end_y])
 
-	else:
-		pos = canvas1.bbox("rectTmp")
+    else:
+        pos = canvas1.bbox("rectTmp")
     # canvas1上に四角形を描画（rectangleは矩形の意味）
-		create_rectangle_alpha(pos[0], pos[1], pos[2], pos[3],
+        create_rectangle_alpha(pos[0], pos[1], pos[2], pos[3],
                                fill="red",
                                alpha=0.3,
                                tag="qBox" + str(qCnt)
                                )
-		canvas1.create_text(
+        canvas1.create_text(
             (pos[0] + pos[2]) / 2, (pos[1] + pos[3]) / 2,
             text="Q_" + str(qCnt),
             tag="qText" + str(qCnt)
         )
 
     # "rectTmp"タグの画像の座標を元の縮尺に戻して取得
-		start_x, start_y, end_x, end_y = [
+        start_x, start_y, end_x, end_y = [
             round(n * RESIZE_RETIO) for n in canvas1.coords("rectTmp")
         ]
-		with open('setting/ini.csv', 'a') as f:
-			writer = csv.writer(f, lineterminator='\n')  # 行末は改行
-			writer.writerow(["Q_" + str(qCnt).zfill(4),
+        with open('setting/ini.csv', 'a') as f:
+            writer = csv.writer(f, lineterminator='\n')  # 行末は改行
+            writer.writerow(["Q_" + str(qCnt).zfill(4),
                             start_x, start_y, end_x, end_y])
 
-	qCnt = qCnt + 1
+    qCnt = qCnt + 1
 
 
 
