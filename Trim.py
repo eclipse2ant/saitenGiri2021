@@ -20,20 +20,20 @@ def trim(t_data):
 	# トリミングされたimageオブジェクトを取得
 	im = Image.open(fu.addpath(t_data['dir'],t_data['file']))
 	print(t_data['file'] + "を斬ります" )
-	''''
+	
 	for pos in t_data['data']:
   	# 出力フォルダのパス
 		title , left , top , right , bottom = pos
-		outputDir = TRIMMED_FILE_DIR + "/" + title
     # もしトリミング後の画像の格納先が存在しなければ作る
-		if os.path.isdir(outputDir) == False:
-			os.makedirs(outputDir)
+		if os.path.isdir(fu.addpath(TRIMMED_FILE_DIR, title)) == False:
+			os.makedirs(fu.addpath(TRIMMED_FILE_DIR, title))
 			im_trimmed = im.crop((int(left), int(top), int(right), int(bottom)))
       # qualityは95より大きい値は推奨されていないらしい
-			im_trimmed.save(outputDir + "/" + val, quality=95)
+			im_trimmed.save(fu.addpath(fu.addpath(TRIMMED_FILE_DIR,
+                                         title),t_data['file']), quality=95)
 			print("___"+ title + "を斬り取りました。" )
 			print("********************************")
-  '''
+  
 
 def allTrim():
 	data = fu.readCSV(datafile)
