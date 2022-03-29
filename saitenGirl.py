@@ -18,7 +18,7 @@ import Giri as giri
 import Trim as trim
 
 class SaitenGirl:
-    def __init__(self):
+    def __init__(self,attr):
         self.fifwid = 500
         self.val = 0.4
         self.fifhet = 400
@@ -26,12 +26,12 @@ class SaitenGirl:
         self.window_h = 700
         self.window_w = int(self.window_h * 1.7)
         self.fig_area_w = int(self.window_h * 1)
+        
+        self.attr = attr
   
-        self.root = Tk()
-        self.root.title("採点ギリギリ")
-        self.root.geometry("800x400")
-        self.root.configure(bg='white')
-        self.top_frame = Frame(self.root, bg="white")		
+        self.tk = Tk()
+        self.set_tk(self.attr)
+        self.top_frame = Frame(self.tk, bg="white")		
         self.top_frame.pack()
         self.fig_frame = Frame(self.top_frame, width=self.fifwid, height=self.fifhet)
         self.fig_frame.grid(column=0, row=0)
@@ -41,17 +41,22 @@ class SaitenGirl:
            {'name': "trimck", 'command': self.trimck, 'text': "全員の解答用紙を斬る"}
         ]
         
+    def set_tk(self, attr):
+        self.tk.title(attr['title'])
+        self.tk.geometry(attr['geometry'])
+        self.tk.configure(bg=attr['bg'])
+
 
     def do(self):
         self.init()
-        self.root.mainloop()
+        self.tk.mainloop()
   
     def init(self):
         try:
             self.topimg = Image.open(self.resource_path("top.png"))
             self.topimg = self.topimg.resize(
                 (int(self.topimg.width * self.val), int(self.topimg.height * self.val)), 0)
-            self.topfig = ImageTk.PhotoImage(self.topimg, master=self.root)
+            self.topfig = ImageTk.PhotoImage(self.topimg, master=self.tk)
             canvas_top = Canvas(
                 bg="white", master=self.fig_frame, width=self.fifwid + 30, height=self.fifhet, highlightthickness=0)
             canvas_top.place(x=0, y=0)
@@ -120,7 +125,6 @@ class SaitenGirl:
 
 
 if __name__ == '__main__':
-    sg = SaitenGirl()
-    sg.do()
-    #sg.root.mainloop()
+    attr = {'title': "採点ギリギリ", 'geometry': "800x400", 'bg': "white"}
+    SaitenGirl(attr).do()
     

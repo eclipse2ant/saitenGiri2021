@@ -73,7 +73,7 @@ def allTrim():
             return 0
 
 
-allTrim()
+#allTrim()
 
 
 
