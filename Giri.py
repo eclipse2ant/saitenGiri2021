@@ -1,3 +1,5 @@
+import imp
+from operator import imod
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk, ImageDraw, ImageFont  # 外部ライブラリ
@@ -6,13 +8,23 @@ import os
 import csv
 import shutil
 import MyFileUtil as fu
+from Windows import Windows
 
+
+#global qCnt
+qCnt = 0
+attr = {'title': "解答用紙を斬る", 'geometry': "str(window_w)" + "x" + 
+        "str(window_h)", 'bg': "grey"}
 window_h = 700
 window_w = int(window_h * 1.7)
 fig_area_w = int(window_h * 1)
-#global qCnt
-qCnt = 0
 
+'''
+class Giri(saitenGirl):
+  def __init__(self,attr):  
+    super.__init__(attr)
+'''
+   
 def GirActivate():
     global RESIZE_RETIO
     global img_resized

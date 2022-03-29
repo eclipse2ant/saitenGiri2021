@@ -1,3 +1,4 @@
+from ast import Pass
 from asyncio.windows_events import NULL
 from tkinter import *
 from tkinter import messagebox
@@ -16,21 +17,11 @@ from PIL import Image, ImageTk, ImageDraw, ImageFont
 import MyFileUtil as fu
 import Giri as giri
 import Trim as trim
+from Windows import Windows 
 
-class SaitenGirl:
-    def __init__(self,attr):
-        self.fifwid = 500
-        self.val = 0.4
-        self.fifhet = 400
-        
-        self.window_h = 700
-        self.window_w = int(self.window_h * 1.7)
-        self.fig_area_w = int(self.window_h * 1)
-        
-        self.attr = attr
+class SaitenGirl(Windows):
   
-        self.tk = Tk()
-        self.set_tk(self.attr)
+    def init(self):
         self.top_frame = Frame(self.tk, bg="white")		
         self.top_frame.pack()
         self.fig_frame = Frame(self.top_frame, width=self.fifwid, height=self.fifhet)
@@ -38,20 +29,9 @@ class SaitenGirl:
         self.f_data_list = [{'name': "nfo" , 'command': self.info, 'text': "はじめに",},
             {'name': "setting_ok", 'command': self.setting_ck, 'text': "初期設定をする"},
             {'name': "input_ok", 'command': self.input_ck, 'text': "どこを斬るか決める"},
-           {'name': "trimck", 'command': self.trimck, 'text': "全員の解答用紙を斬る"}
-        ]
-        
-    def set_tk(self, attr):
-        self.tk.title(attr['title'])
-        self.tk.geometry(attr['geometry'])
-        self.tk.configure(bg=attr['bg'])
+            {'name': "trimck", 'command': self.trimck, 'text': "全員の解答用紙を斬る"}
+            ]
 
-
-    def do(self):
-        self.init()
-        self.tk.mainloop()
-  
-    def init(self):
         try:
             self.topimg = Image.open(self.resource_path("top.png"))
             self.topimg = self.topimg.resize(

@@ -26,7 +26,7 @@ def do_trim(image, output_dir, pos, file):
     fu.if_mkdir(fu.addpath(output_dir, title))
     im_trimmed = image.crop((int(left), int(top), int(right), int(bottom)))
     # qualityは95より大きい値は推奨されていないらしい
-#	im_trimmed.save(fu.addpath(fu.addpath(output_dir, title), file), quality=95)
+    im_trimmed.save(fu.addpath(fu.addpath(output_dir, title), file), quality=95)
     print(fu.addpath(fu.addpath(output_dir, title), file))
     print("___"+ title + "を斬り取りました。" )
     print("********************************")
