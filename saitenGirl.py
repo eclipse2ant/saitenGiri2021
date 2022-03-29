@@ -83,7 +83,14 @@ class SaitenGirl(Windows):
             messagebox.showerror(
             "エラー", "setting/inputの中に、解答用紙のデータが存在しません。画像を入れてから、また開いてね。")
         else:
-            giri.GirActivate()
+ #           giri.GirActivate()
+            window_h = 700
+            window_w = int(window_h * 1.7)
+            fig_area_w = int(window_h * 1)
+
+            attr = {'title': "解答用紙を斬る", 'geometry': str(window_w) + "x" + 
+                str(window_h), 'bg': "grey90"}
+            giri.Giri(attr).do()
 
 
     def trimck(self):
