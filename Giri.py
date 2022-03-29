@@ -1,5 +1,3 @@
-import imp
-from operator import imod
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk, ImageDraw, ImageFont  # 外部ライブラリ

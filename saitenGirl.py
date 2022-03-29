@@ -17,6 +17,7 @@ from PIL import Image, ImageTk, ImageDraw, ImageFont
 import MyFileUtil as fu
 import Giri as giri
 import Trim as trim
+import Saiten as sai
 from Windows import Windows 
 
 class SaitenGirl(Windows):
@@ -29,7 +30,8 @@ class SaitenGirl(Windows):
         self.f_data_list = [{'name': "nfo" , 'command': self.info, 'text': "はじめに",},
             {'name': "setting_ok", 'command': self.setting_ck, 'text': "初期設定をする"},
             {'name': "input_ok", 'command': self.input_ck, 'text': "どこを斬るか決める"},
-            {'name': "trimck", 'command': self.trimck, 'text': "全員の解答用紙を斬る"}
+            {'name': "trimck", 'command': self.trimck, 'text': "全員の解答用紙を斬る"},
+            {'name': "saitenSelect", 'command': self.saitenSelect, 'text': "斬った画像を採点する"}
             ]
 
         try:
@@ -101,8 +103,27 @@ class SaitenGirl(Windows):
         else:
             pass
 
-
-  
+    def saitenSelect(self):
+        '''
+        def show_selection():
+            for i in lb.curselection():
+                print(lb.get(i))
+                siwakeApp(str(lb.get(i)))
+                selectQ.destroy()
+        '''
+        attr = {'title': "採点する問題を選ぶ", 'geometry': "500x500", 
+                'bg': "grey90"}
+        sai.Saiten(attr).do()
+        
+    def siwakeApp(Qnum):
+        ''''
+        def exit_siwake():
+            ret = messagebox.askyesno('終了します', '採点を中断し、ホームに戻っても良いですか？')
+            if ret == True:
+                siwake_win.destroy()
+        '''
+        pass
+    
     # 画像パスの取得
     # https://msteacher.hatenablog.jp/entry/2020/06/27/170529
     def resource_path(self, relative_path):
