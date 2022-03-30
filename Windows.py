@@ -43,6 +43,9 @@ class Windows:
   
     def init(self):
         Pass
+
+    def backTop(self):
+        self.tk.destroy()
         
 
   
