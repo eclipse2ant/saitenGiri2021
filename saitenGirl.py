@@ -31,7 +31,9 @@ class SaitenGirl(Windows):
             {'name': "setting_ok", 'command': self.setting_ck, 'text': "初期設定をする"},
             {'name': "input_ok", 'command': self.input_ck, 'text': "どこを斬るか決める"},
             {'name': "trimck", 'command': self.trimck, 'text': "全員の解答用紙を斬る"},
-            {'name': "saitenSelect", 'command': self.saitenSelect, 'text': "斬った画像を採点する"}
+            {'name': "saitenSelect", 'command': self.saitenSelect,
+                'text': "斬った画像を採点する"},
+            {'name': "exitGiri", 'command': self.exitGiri, 'text': "アプリを閉じる"}
             ]
 
         try:
@@ -61,6 +63,9 @@ class SaitenGirl(Windows):
     def info(self):
         messagebox.showinfo(
             "はじめに", "オンラインヘルプをご覧ください。\n https://phys-ken.github.io/saitenGiri2021/")
+
+    def exitGiri(self):
+        sys.exit()
 
     def setting_ck(self):
         if not os.path.exists("./setting/"):

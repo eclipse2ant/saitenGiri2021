@@ -6,6 +6,7 @@ from PIL import Image, ImageTk, ImageDraw, ImageFont  # 外部ライブラリ
 import os
 import csv
 import shutil
+import openpyxl
 
 from attr import attr
 import MyFileUtil as fu
@@ -74,7 +75,9 @@ class Saiten(Windows):
             SiwakeApp(attr).do()
  #           self.tk.destroy()
             
-
+    def backTop(self):
+        self.tk.destroy()
+        
 class SiwakeApp(Windows):
     def init(self):
         # グローバル変数
@@ -271,6 +274,66 @@ class SiwakeApp(Windows):
         print(self.assort_dict[self.filename_lst[self.img_num]])
 
 
+    def saiten2xlsx(self):
+        def readCSV():
+            # もしcsvが無ければ、全部止める
+            if os.path.isfile("./setting/trimData.csv") == False:
+                return 0
+            else:
+                with open('./setting/trimData.csv') as f:
+                    reader = csv.reader(f)
+                    data = [row for row in reader]
+                    data.pop(0)
+                    return data
+
+        def setTensu(figname, qname, tensu):
+
+            qCol = int(qname[-4:]) + 3
+            ws.cell(1, qCol + 1).value = qname
+
+            MIN_COL = 1
+            MIN_ROW = 2
+
+            MAX_COL = 1
+            MAX_ROW = ws.max_row
+
+            # 範囲データを順次処理
+            for row in ws.iter_rows(min_col=MIN_COL, min_row=MIN_ROW, max_col=MAX_COL, max_row=MAX_ROW):
+                for cell in row:
+                    try:
+                        # 該当セルの値取得
+                        cell_value = cell.value
+                        if figname == cell_value:
+                            o = cell.offset(0, qCol)
+                            try:
+                                o.value = int(tensu)
+                            except:
+                                o.value = tensu
+                    except:
+                        pass
+
+        data = readCSV()
+
+        xlPath = "./setting/saiten.xlsx"
+        wb = openpyxl.load_workbook(xlPath)
+        ws = wb["採点シート"]
+
+        while data:
+            title, left, top, right, bottom = data.pop(0)
+            if title == "name":
+                continue
+            qpath = "./setting/output/" + title
+            for curDir, dirs, files in os.walk(qpath):
+                if files:
+                    for f in files:
+                        tensu = os.path.basename(os.path.dirname(curDir + "/" + f))
+                        if not tensu == title:
+                            setTensu(figname=f, qname=title, tensu=tensu)
+                        else:
+                            setTensu(figname=f, qname=title, tensu="未")
+        wb.save(xlPath)
+
+
  
  # フォルダ分け実行 - - - - - - - - - - - - - - - - - - - - - - - -
     
@@ -296,6 +359,9 @@ class SiwakeApp(Windows):
                 print(new_path)
             else:
                 pass
+        self.saiten2xlsx()
+        messagebox.showinfo("採点保存", "ここまでの採点結果を保存しました。\nskipした項目は、採点されていません。")
+        self.tk.destroy()
  
  
     def exit_siwake(self):
