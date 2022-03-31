@@ -84,7 +84,8 @@ class SaitenGirl(Windows):
 
     def input_ck(self): 
         # 表示する画像の取得
-        files = fu.get_sorted_files(os.getcwd() + "/setting/input/*")
+        files = fu.get_sorted_filterd_files(os.getcwd() + "/setting/input/*")
+        print(files)
         if not files:
         # メッセージボックス（警告）
             messagebox.showerror(

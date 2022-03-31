@@ -2,6 +2,7 @@ import csv
 import os
 import sys
 import shutil
+import glob
 from turtle import pos
 from PIL import Image, ImageTk, ImageDraw, ImageFont  # 外部ライブラリ
 
@@ -71,6 +72,19 @@ def allTrim():
             except OSError as err:
                 pass
             return 0
+
+    # nameフォルダの中身をリサイズ
+    # maxheight以上のときは、小さくする。
+    maxheight = 50
+    files = glob.glob("./setting/output/name/*")
+    img = Image.open(files[0])
+    namew, nameh = img.size
+    if nameh > maxheight:
+        rr = nameh / maxheight
+        for f in files:
+            img = Image.open(f)
+            img = img.resize((int(namew / rr), int(nameh/rr)))
+            img.save(f)
 
 
 #allTrim()

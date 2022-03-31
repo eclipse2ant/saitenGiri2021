@@ -1,3 +1,4 @@
+from lzma import FILTER_DELTA
 import os
 import csv
 import glob
@@ -12,11 +13,15 @@ def initDir():
     writer.writerow(["tag", "start_x", "start_y", "end_x", "end_y"])
     f.close()
 
-def get_sorted_files(dir_path):
-    all_sorted = sorted(glob.glob(dir_path))
-    fig_sorted = [s for s in all_sorted if s.endswith(
-    ('jpg', "jpeg", "png", "PNG", "JPEG", "JPG", "gif"))]
-    return fig_sorted
+def get_sorted_filterd_files(dir_path):
+    return get_filtered_files(get_all_sorted_files(dir_path))
+    
+def get_all_sorted_files(dir_path):
+    return sorted(glob.glob(dir_path))
+
+def  get_filtered_files(list):
+    return [s for s in list if s.endswith(
+        ('jpg', "jpeg", "png", "PNG", "JPEG", "JPG", "gif"))]
 
 def readCSV(datafile):
   # もしcsvが無ければ、全部止める
