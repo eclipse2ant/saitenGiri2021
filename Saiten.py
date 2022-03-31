@@ -132,8 +132,8 @@ class SiwakeApp(Windows):
         self.filename_lst = []
         self.assort_file_list = []
         self.assort_dict = {}
-        
-        
+        self.cbln = []
+        self.chk = []
         
         print("siwakeApp IN " + str(self.attr['Qnum']))
 
@@ -204,8 +204,10 @@ class SiwakeApp(Windows):
         setumeiBun1 = Label(button_siwake_frame , text = "入力可能な点数にチェックをつけてください。" ).pack(side = TOP)
         setumeiBun2 = Label(button_siwake_frame , text = "誤った数字キーを押すのを防ぎます。").pack(side = TOP)
         chkfonts = ("Meiryo UI", 10)
-        self.cbln0 = BooleanVar(master = self.tk)
-        self.chk0 = Checkbutton(master = button_siwake_frame,  variable=self.cbln0 ,text='0' , font = chkfonts).pack(side = TOP)
+        for i in range(0,11):
+            self.cbln.append(BooleanVar(master = self.tk))
+            self.chk.append(Checkbutton(master = button_siwake_frame,  variable=self.cbln[i] ,text=str(i) , font = chkfonts).pack(side = TOP))
+        ''''
         self.cbln1 = BooleanVar(master = self.tk)
         self.chk1 = Checkbutton( variable=self.cbln1 , master = button_siwake_frame, text='1' , font = chkfonts).pack(side = TOP)
         self.cbln2 = BooleanVar(master = self.tk)
@@ -224,7 +226,7 @@ class SiwakeApp(Windows):
         self.chk8 = Checkbutton( variable=self.cbln8 , master = button_siwake_frame, text='8' , font = chkfonts).pack(side = TOP)
         self.cbln9 = BooleanVar(master = self.tk)
         self.chk9 = Checkbutton( variable=self.cbln9 , master = button_siwake_frame, text='9' , font = chkfonts).pack(side = TOP)
-
+        '''
         
         # 読み込みボタン描画設定
         self.load_file()
@@ -234,8 +236,10 @@ class SiwakeApp(Windows):
 
     def file_assort(self, event):
         tokutenList = []
-        if self.cbln0.get():
-            tokutenList.append("0")
+        for i in range(0,11):
+            if self.cbln[i].get():
+                tokutenList.append(str(i))
+        ''''            
         if self.cbln1.get():
             tokutenList.append("1")        
         if self.cbln2.get():
@@ -253,7 +257,8 @@ class SiwakeApp(Windows):
         if self.cbln8.get():
             tokutenList.append("8")
         if self.cbln9.get():
-            tokutenList.append("9")  
+            tokutenList.append("9")
+        '''  
         print("入力可能な点数は" + str(tokutenList))
 
         if str(event.keysym) in tokutenList:
@@ -359,7 +364,7 @@ class SiwakeApp(Windows):
                 print(new_path)
             else:
                 pass
-        self.saiten2xlsx()
+#        self.saiten2xlsx()
         messagebox.showinfo("採点保存", "ここまでの採点結果を保存しました。\nskipした項目は、採点されていません。")
         self.tk.destroy()
  
