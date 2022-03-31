@@ -5,6 +5,7 @@ import shutil
 import glob
 from turtle import pos
 from PIL import Image, ImageTk, ImageDraw, ImageFont  # 外部ライブラリ
+from tkinter import messagebox
 
 import MyFileUtil as fu
 
@@ -86,6 +87,7 @@ def allTrim():
             img = img.resize((int(namew / rr), int(nameh/rr)))
             img.save(f)
 
+    messagebox.showinfo('斬りました', '全員分の解答用紙を斬りました。')
 
 #allTrim()
 
