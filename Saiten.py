@@ -204,7 +204,7 @@ class SiwakeApp(Windows):
         setumeiBun1 = Label(button_siwake_frame , text = "入力可能な点数にチェックをつけてください。" ).pack(side = TOP)
         setumeiBun2 = Label(button_siwake_frame , text = "誤った数字キーを押すのを防ぎます。").pack(side = TOP)
         chkfonts = ("Meiryo UI", 10)
-        for i in range(0,11):
+        for i in range(0,10):
             self.cbln.append(BooleanVar(master = self.tk))
             self.chk.append(Checkbutton(master = button_siwake_frame,  variable=self.cbln[i] ,text=str(i) , font = chkfonts).pack(side = TOP))
         ''''
@@ -236,7 +236,7 @@ class SiwakeApp(Windows):
 
     def file_assort(self, event):
         tokutenList = []
-        for i in range(0,11):
+        for i in range(0,10):
             if self.cbln[i].get():
                 tokutenList.append(str(i))
         ''''            
@@ -364,7 +364,7 @@ class SiwakeApp(Windows):
                 print(new_path)
             else:
                 pass
-#        self.saiten2xlsx()
+        self.saiten2xlsx()
         messagebox.showinfo("採点保存", "ここまでの採点結果を保存しました。\nskipした項目は、採点されていません。")
         self.tk.destroy()
  
