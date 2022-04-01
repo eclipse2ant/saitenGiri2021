@@ -1,4 +1,8 @@
+import sys
+sys.path.append('../')
+
 from Trim import *
+import MyFileUtil as fu
 
 def test_readcsv():
     datafile = "./setting/trimData.csv"
@@ -12,7 +16,7 @@ def test_readcsv():
 def test_extfilter(): 
     ORIGINAL_FILE_DIR = "./setting/input"
     extlist =  ['jpg', "jpeg", "png", "PNG", "JPEG", "JPG", "gif"]
-    t1 = fu.exxt_filter(os.listdir(ORIGINAL_FILE_DIR), extlist)
+    t1 = fu.ext_filter(os.listdir(ORIGINAL_FILE_DIR), extlist)
     t2 = ['答案01.jpg', '答案02.jpg', '答案03.jpg', '答案04.jpg', '答案05.jpg', 
        '答案06.jpg', '答案07.jpg', '答案08.jpg', '答案09.jpg', '答案10.jpg']
     assert t1 == t2

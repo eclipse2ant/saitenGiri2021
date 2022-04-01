@@ -15,8 +15,8 @@ from Windows import Windows
 class Saiten(Windows):
     def init(self):
         self.lb = NULL
-        # macにおける、.DS_storeを無視してカウントする。
-        maxNinzu = len([f for f in next(os.walk("./setting/input/"))[2] if not f.startswith('.')])
+        print(self.maxNinzu())
+        
 
         # outputの中のフォルダを取得
         path = "./setting/output/"
@@ -29,7 +29,7 @@ class Saiten(Windows):
             if not i == "name":
                 misaiten = len([f for f in next(os.walk("./setting/output/" + i))[2] if not f.startswith('.')])
                 self.lb.insert(END, i)
-                if misaiten == maxNinzu:
+                if misaiten == self.maxNinzu():
                     self.lb.itemconfig(clcounter, {'bg': 'white'})
                 elif misaiten == 0:
                     self.lb.itemconfig(clcounter,  {'bg': 'gray'})
@@ -64,6 +64,10 @@ class Saiten(Windows):
         totopB = Button(
             button_frame, text='Topに戻る', width=15, height=3,
             command=self.backTop).pack()
+        
+    # macにおける、.DS_storeを無視してカウントする。
+    def maxNinzu(self):
+        return len([f for f in next(os.walk("./setting/input/"))[2] if not f.startswith('.')])
 
     def show_selection(self):
         for i in self.lb.curselection():
@@ -103,19 +107,6 @@ class SiwakeApp(Windows):
         global siwake_win
         global saitenCount
         global f_basename
-        '''
-
-        '''
-        global cbln0
-        global cbln1
-        global cbln2
-        global cbln3
-        global cbln4
-        global cbln5
-        global cbln6
-        global cbln7
-        global cbln8
-        global cbln9
         '''
         
         self.assort_btn = NULL
@@ -207,26 +198,6 @@ class SiwakeApp(Windows):
         for i in range(0,10):
             self.cbln.append(BooleanVar(master = self.tk))
             self.chk.append(Checkbutton(master = button_siwake_frame,  variable=self.cbln[i] ,text=str(i) , font = chkfonts).pack(side = TOP))
-        ''''
-        self.cbln1 = BooleanVar(master = self.tk)
-        self.chk1 = Checkbutton( variable=self.cbln1 , master = button_siwake_frame, text='1' , font = chkfonts).pack(side = TOP)
-        self.cbln2 = BooleanVar(master = self.tk)
-        self.chk2 = Checkbutton( variable=self.cbln2 , master = button_siwake_frame, text='2' , font = chkfonts).pack(side = TOP)
-        self.cbln3 = BooleanVar(master = self.tk)
-        self.chk3 = Checkbutton( variable=self.cbln3 , master = button_siwake_frame, text='3' , font = chkfonts).pack(side = TOP)
-        self.cbln4 = BooleanVar(master = self.tk)
-        self.chk4 = Checkbutton( variable=self.cbln4 , master = button_siwake_frame, text='4' , font = chkfonts).pack(side = TOP)
-        self.cbln5 = BooleanVar(master = self.tk)
-        self.chk5 = Checkbutton( variable=self.cbln5 , master = button_siwake_frame, text='5' , font = chkfonts).pack(side = TOP)
-        self.cbln6 = BooleanVar(master = self.tk)
-        self.chk6 = Checkbutton( variable=self.cbln6 , master = button_siwake_frame, text='6' , font = chkfonts).pack(side = TOP)
-        self.cbln7 = BooleanVar(master = self.tk)
-        self.chk7 = Checkbutton( variable=self.cbln7 , master = button_siwake_frame, text='7' , font = chkfonts).pack(side = TOP)
-        self.cbln8 = BooleanVar(master = self.tk)
-        self.chk8 = Checkbutton( variable=self.cbln8 , master = button_siwake_frame, text='8' , font = chkfonts).pack(side = TOP)
-        self.cbln9 = BooleanVar(master = self.tk)
-        self.chk9 = Checkbutton( variable=self.cbln9 , master = button_siwake_frame, text='9' , font = chkfonts).pack(side = TOP)
-        '''
         
         # 読み込みボタン描画設定
         self.load_file()
@@ -239,26 +210,6 @@ class SiwakeApp(Windows):
         for i in range(0,10):
             if self.cbln[i].get():
                 tokutenList.append(str(i))
-        ''''            
-        if self.cbln1.get():
-            tokutenList.append("1")        
-        if self.cbln2.get():
-            tokutenList.append("2")        
-        if self.cbln3.get():
-            tokutenList.append("3")        
-        if self.cbln4.get():
-            tokutenList.append("4")        
-        if self.cbln5.get():
-            tokutenList.append("5")        
-        if self.cbln6.get():
-            tokutenList.append("6")        
-        if self.cbln7.get():
-            tokutenList.append("7")        
-        if self.cbln8.get():
-            tokutenList.append("8")
-        if self.cbln9.get():
-            tokutenList.append("9")
-        '''  
         print("入力可能な点数は" + str(tokutenList))
 
         if str(event.keysym) in tokutenList:
