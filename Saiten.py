@@ -17,19 +17,13 @@ class Saiten(Windows):
     OUTPUT_PATH = "./setting/output/"
 
     
-    def init(self):
-        self.lb = NULL        
-
-        # outputの中のフォルダを取得
-        
-        files_dir = [f for f in self.get_files(self.OUTPUT_PATH) if os.path.isdir(os.path.join(self.OUTPUT_PATH, f))]
-        files_dir.sort()
+    def init(self):     
         self.lb = Listbox(self.tk, selectmode='single', height=20, width=20)
         clcounter = 0
-        for i in files_dir:
-            if not i == "name":
-                misaiten = len([f for f in next(os.walk("./setting/output/" + i))[2] if not f.startswith('.')])
-                self.lb.insert(END, i)
+        for dir in self.get_dirs(self.OUTPUT_PATH):
+            if not dir == "name":
+                misaiten = len([f for f in next(os.walk("./setting/output/" + dir))[2] if not f.startswith('.')])
+                self.lb.insert(END, dir)
                 if misaiten == self.maxNinzu():
                     self.lb.itemconfig(clcounter, {'bg': 'white'})
                 elif misaiten == 0:
@@ -78,13 +72,16 @@ class Saiten(Windows):
                     }
             print(attr)
             SiwakeApp(attr).do()
- #           self.tk.destroy()
             
     def backTop(self):
         self.tk.destroy()
         
     def get_files(self, path):
         return fu.get_files(path)
+    
+    # outputの中のフォルダを取得
+    def get_dirs(self, path):
+        return fu.get_dirs(path)
         
 class SiwakeApp(Windows):
     def init(self):

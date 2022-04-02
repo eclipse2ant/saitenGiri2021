@@ -46,6 +46,9 @@ def if_mkdir(dir):
         
 def get_files(path):
         return os.listdir(path)    
+    
+def  get_dirs(path):
+        return sorted([f for f in get_files(path) if os.path.isdir(os.path.join(path, f))])
 
 def folder_walker(folder_path, recursive=False, file_ext=".*"):
     """
