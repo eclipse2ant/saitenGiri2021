@@ -13,15 +13,16 @@ import MyFileUtil as fu
 from Windows import Windows
 
 class Saiten(Windows):
+    
+    OUTPUT_PATH = "./setting/output/"
+
+    
     def init(self):
-        self.lb = NULL
-        print(self.maxNinzu())
-        
+        self.lb = NULL        
 
         # outputの中のフォルダを取得
-        path = "./setting/output/"
-        files = os.listdir(path)
-        files_dir = [f for f in files if os.path.isdir(os.path.join(path, f))]
+        
+        files_dir = [f for f in self.get_files(self.OUTPUT_PATH) if os.path.isdir(os.path.join(self.OUTPUT_PATH, f))]
         files_dir.sort()
         self.lb = Listbox(self.tk, selectmode='single', height=20, width=20)
         clcounter = 0
@@ -81,6 +82,9 @@ class Saiten(Windows):
             
     def backTop(self):
         self.tk.destroy()
+        
+    def get_files(self, path):
+        return fu.get_files(path)
         
 class SiwakeApp(Windows):
     def init(self):

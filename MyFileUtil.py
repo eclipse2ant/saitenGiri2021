@@ -43,7 +43,9 @@ def addpath(path, file):
 def if_mkdir(dir):
     if os.path.isdir(dir) == False:
         os.makedirs(dir)
-
+        
+def get_files(path):
+        return os.listdir(path)    
 
 def folder_walker(folder_path, recursive=False, file_ext=".*"):
     """

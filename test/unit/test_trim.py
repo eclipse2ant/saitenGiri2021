@@ -1,16 +1,27 @@
+import os
 import sys
-sys.path.append('../')
+
+
+def up(path):
+    return os.path.dirname(path)
+parent_dir = up(up(up(os.path.abspath(__file__))))
+sys.path.append(parent_dir)
+
 
 from Trim import *
 import MyFileUtil as fu
 
 def test_readcsv():
     datafile = "./setting/trimData.csv"
+    print(fu.readCSV(datafile))
     t1 = fu.readCSV(datafile)
-    t2 = [['name', '337', '37', '507', '81'], ['Q_0001', '62', '126', '185', '264'], 
-        ['Q_0002', '55', '271', '190', '318'], ['Q_0003', '54', '326', '189', '375'],
-        ['Q_0004', '61', '378', '190', '432'], ['Q_0005', '63', '441', '187', '481'],
-        ['Q_0006', '58', '486', '189', '541']]
+    t2 = [['name', '331', '27', '507', '79'], ['Q_0001', '56', '128', '187', '265'],
+          ['Q_0002', '57', '266', '192', '321'], ['Q_0003', '51', '318', '193', '375'],
+          ['Q_0004', '56', '371', '193', '432'], ['Q_0005', '57', '426', '186', '483'],
+          ['Q_0006', '50', '480', '191', '543'], ['Q_0007', '59', '542', '190', '597'],
+          ['Q_0008', '50', '594', '193', '654'], ['Q_0009', '49', '647', '194', '706'],
+          ['Q_0010', '56', '706', '187', '753'], ['Q_0011', '221', '128', '347', '321']]
+   
     assert t1 == t2
 
 def test_extfilter(): 
@@ -21,4 +32,4 @@ def test_extfilter():
        '答案06.jpg', '答案07.jpg', '答案08.jpg', '答案09.jpg', '答案10.jpg']
     assert t1 == t2
  
-  
+#print(fu.readCSV("./setting/trimData.csv"))  
