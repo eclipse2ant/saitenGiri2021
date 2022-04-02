@@ -22,11 +22,10 @@ class Saiten(Windows):
         clcounter = 0
         for dir in self.get_dirs(self.OUTPUT_PATH):
             if not dir == "name":
-                misaiten = len([f for f in next(os.walk("./setting/output/" + dir))[2] if not f.startswith('.')])
                 self.lb.insert(END, dir)
-                if misaiten == self.maxNinzu():
+                if self.misaiten(dir) == self.maxNinzu():
                     self.lb.itemconfig(clcounter, {'bg': 'white'})
-                elif misaiten == 0:
+                elif self.misaiten(dir) == 0:
                     self.lb.itemconfig(clcounter,  {'bg': 'gray'})
                 else:
                     self.lb.itemconfig(clcounter,  {'bg': 'pale green'})
@@ -62,7 +61,10 @@ class Saiten(Windows):
         
     # macにおける、.DS_storeを無視してカウントする。
     def maxNinzu(self):
-        return len([f for f in next(os.walk("./setting/input/"))[2] if not f.startswith('.')])
+        return len([file for file in next(os.walk("./setting/input/"))[2] if not file.startswith('.')])
+
+    def misaiten(self,dir):
+        return len([file for file in next(os.walk("./setting/output/" + dir))[2] if not file.startswith('.')])
 
     def show_selection(self):
         for i in self.lb.curselection():
@@ -82,6 +84,7 @@ class Saiten(Windows):
     # outputの中のフォルダを取得
     def get_dirs(self, path):
         return fu.get_dirs(path)
+    
         
 class SiwakeApp(Windows):
     def init(self):
