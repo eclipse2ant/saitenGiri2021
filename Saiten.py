@@ -22,7 +22,6 @@ class Saiten(Windows):
         clcounter = 0
         for dir in self.get_dirs(self.OUTPUT_PATH):
             if not dir == "name":
-                self.misaiten(dir)
                 self.lb.insert(END, dir)
                 if self.misaiten(dir) == self.maxNinzu():
                     self.lb.itemconfig(clcounter, {'bg': 'white'})
