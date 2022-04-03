@@ -9,7 +9,7 @@ import shutil
 import openpyxl
 
 from attr import attr
-import MyFileUtil as fu
+import mFileUtil as fu
 from Windows import Windows
 
 class Saiten(Windows):

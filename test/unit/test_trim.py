@@ -9,7 +9,7 @@ sys.path.append(parent_dir)
 
 
 from Trim import *
-import MyFileUtil as fu
+import mFileUtil as fu
 
 def test_readcsv():
     datafile = "./setting/trimData.csv"

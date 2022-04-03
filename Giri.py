@@ -5,7 +5,7 @@ from PIL import Image, ImageTk, ImageDraw, ImageFont  # 外部ライブラリ
 import os
 import csv
 import shutil
-import MyFileUtil as fu
+import mFileUtil as fu
 from Windows import Windows
 
 

@@ -11,7 +11,7 @@ from PIL import Image, ImageTk, ImageDraw, ImageFont  # 外部ライブラリ
 from tkinter import messagebox
 
 
-import MyFileUtil as fu
+import mFileUtil as fu
 
 datafile = "./setting/trimData.csv"
 #output_dir = "./setting/output"

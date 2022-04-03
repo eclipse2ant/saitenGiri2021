@@ -14,7 +14,7 @@ import csv
 
 from PIL import Image, ImageTk, ImageDraw, ImageFont
 
-import MyFileUtil as fu
+import mFileUtil as fu
 import Giri as giri
 import Trim as trim
 import Saiten as sai

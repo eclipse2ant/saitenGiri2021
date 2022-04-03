@@ -14,7 +14,7 @@ import csv
 
 from PIL import Image, ImageTk, ImageDraw, ImageFont
 
-import MyFileUtil as fu
+import mFileUtil as fu
 
 
 class Windows:
